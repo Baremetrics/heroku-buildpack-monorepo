@@ -7,6 +7,7 @@ BUILD_DIR="$1"
 CACHE_DIR="$2"
 ENV_DIR="$3"
 STAGE="$(mktemp -d)"
+BUILD_DIR_PARENT="$(dirname $BUILD_DIR)"
 
 if [ ! -f "${ENV_DIR}/APP_BASE" ]; then
     echo "APP_BASE was not set. Aborting" | indent
@@ -14,13 +15,10 @@ if [ ! -f "${ENV_DIR}/APP_BASE" ]; then
 fi
 APP_BASE="$(cat "${ENV_DIR}/APP_BASE")"
 
-echo $APP_BASE
-echo $BUILD_DIR
-echo $STAGE
-
 (
     mv "${BUILD_DIR}/${APP_BASE}" "${STAGE}" &&
-    mv "${BUILD_DIR}/bare_shared" "${STAGE}" &&
+    mv "${BUILD_DIR}/bare_shared/" "${BUILD_DIR_PARENT}" &&
+    mv "${BUILD_DIR}/bare_money/" "${BUILD_DIR_PARENT}" &&
     rm -rf "${BUILD_DIR}" &&
     mv "${STAGE}/$(basename "$APP_BASE")" "${BUILD_DIR}"
 )
